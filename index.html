@@ -1,9 +1,191 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="icon" type="image/x-icon" href="/images/favicon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Me – DeivDev</title>
+  <style>
+    :root {
+      --bg: #272822;
+      --fg: #f8f8f2;
+      --green: #a6e22e;
+      --pink: #f92672;
+      --yellow: #e6db74;
+      --blue: #66d9ef;
+      --orange: #fd971f;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Fira Code', monospace;
+      background-color: var(--bg);
+      color: var(--fg);
+      overflow: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 10vh auto;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: var(--green);
+    }
+
+    h2 {
+      color: var(--blue);
+      margin-top: 2rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    .highlight {
+      color: var(--pink);
+    }
+
+    .terminal {
+      border-left: 3px solid var(--orange);
+      padding-left: 1rem;
+      margin-bottom: 2rem;
+      font-family: 'Courier New', Courier, monospace;
+      color: var(--yellow);
+      animation: typing 3s steps(40, end);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        padding: 1.5rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+    }
+  </style>
 </head>
-  <body>
-    <h1>This Page Is About ME</h1>
-  </body>
+<body>
+  <canvas id="bg"></canvas>
+  <div class="content">
+    <div class="terminal">&gt; about --me</div>
+    <h1>Hello, I'm <span class="highlight">Deivid</span></h1>
+    <p>
+      I'm a passionate <span class="highlight">Fullstack Developer</span> who sees code as the pencil of my mind. I build performant, clean web applications using <span class="highlight">Golang</span>, <span class="highlight">JavaScript</span>, and <span class="highlight">Python</span>.
+    </p>
+
+    <h2>Experience</h2>
+    <ul>
+      <li><span class="highlight">Brazilian Marine Soldier</span> since February 2024 (awaiting discharge).</li>
+      <li><span class="highlight">Freelance Developer</span> in my free time — creating apps, websites, and personal projects.</li>
+    </ul>
+
+    <h2>Education & Certifications</h2>
+    <ul>
+      <li>Studying <span class="highlight">Data Science</span> at <span class="highlight">Descomplica University</span>.</li>
+      <li>Certified in <span class="highlight">Python</span> and <span class="highlight">JavaScript</span> through <span class="highlight">DIO.me</span> and <span class="highlight">Alura</span>.</li>
+    </ul>
+
+    <h2>Interests & Values</h2>
+    <p>
+      I'm deeply interested in <span class="highlight">web scraping</span> and <span class="highlight">browser-based server architecture</span> using technologies like <span class="highlight">Chromium</span>. I value <span class="highlight">clear communication</span> and apply <span class="highlight">agile methodologies</span> such as <span class="highlight">Kanban</span> and <span class="highlight">Scrum</span> to build efficient, well-structured solutions.
+    </p>
+
+    <p>🔗 Learn more at: <a href="https://deiv.site" style="color: var(--blue)">deiv.site</a></p>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = Math.random() * 3 + 1;
+        this.color = ['#66d9ef', '#a6e22e', '#f92672', '#fd971f'][Math.floor(Math.random() * 4)];
+        this.life = 60 + Math.random() * 20;
+        this.dx = (Math.random() - 0.5) * 2;
+        this.dy = (Math.random() - 0.5) * 2;
+      }
+
+      update() {
+        this.x += this.dx;
+        this.y += this.dy;
+        this.life--;
+        this.radius *= 0.96;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
+    }
+
+    function animate() {
+      ctx.fillStyle = "rgba(39, 40, 34, 0.2)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      particles = particles.filter(p => p.life > 0);
+      for (let p of particles) {
+        p.update();
+        p.draw();
+      }
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener('mousemove', e => {
+      for (let i = 0; i < 5; i++) {
+        particles.push(new Particle(e.clientX, e.clientY));
+      }
+    });
+  </script>
+</body>
 </html>
